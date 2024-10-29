@@ -1,0 +1,18 @@
+description: Ultralytics YOLO11-posenmodified model trained on /home/vineetkushwaha_gofynd_com/shoe/ultralytics/data.yaml
+author: Ultralytics
+date: '2024-10-28T05:07:52.118137'
+version: 8.3.9
+license: AGPL-3.0 License (https://ultralytics.com/license)
+docs: https://docs.ultralytics.com
+stride: 32
+task: pose
+batch: 1
+imgsz:
+- 224
+- 224
+names:
+  0: footL
+  1: footR
+kpt_shape:
+- 8
+- 2

@@ -1,0 +1,148 @@
+<!-- src/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Inference with TensorFlow.js</title>
+    <style>
+        /* Basic styling for better presentation */
+        body { 
+            font-family: Arial, sans-serif; 
+            text-align: center; 
+            margin: 20px; 
+            position: relative; 
+        }
+        button:disabled { 
+            opacity: 0.5; 
+        }
+        pre { 
+            text-align: left; 
+            display: block; 
+            margin-top: 20px; 
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+            max-width: 640px; 
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        #videoContainer, #webcamContainer { 
+            display: block; 
+            margin-top: 10px; 
+            position: relative; /* Set video container position to relative */
+            margin-left: auto;
+            margin-right: auto;
+            /* Set specific sizes */
+            width: 640px; /* Original video size */
+            height: 640px; /* Original video size */
+            aspect-ratio: 1 / 1; /* Keep the aspect ratio consistent */
+        }
+        #webcamContainer {
+            width: 640px; /* Webcam display width */
+            height: 640px; /* Webcam display height */
+        }
+        video, #outputCanvas, #overlayCanvas, #webcamDisplayCanvas, #webcamOverlayCanvas { 
+            border: 1px solid black; 
+            width: 100%; 
+            height: 100%; 
+            position: absolute; /* Stack all elements on top of each other */
+            top: 0; 
+            left: 0; 
+        }
+        video, #outputCanvas, #webcamDisplayCanvas { 
+            z-index: 1; /* Ensure the video and outputCanvas are below the overlay */
+        }
+        #overlayCanvas, #webcamOverlayCanvas { 
+            pointer-events: none; /* Allow clicks to pass through */
+            z-index: 2; /* Ensure overlay is on top */
+        }
+        @media (max-width: 1240px) {
+            #videoContainer, #webcamContainer {
+                width: 100%; /* Make the video container take full width on smaller screens */
+                height: auto; /* Maintain aspect ratio */
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Run Model Inference</h1>
+    <button id="loadModelButton">Load Model</button>
+    <br><br>
+    <label for="backendSelect">Choose Backend:</label>
+    <select id="backendSelect">
+        <option value="webgl">WebGL</option>
+        <option value="wasm">WASM</option>
+        <option value="cpu">CPU</option>
+    </select>
+    <br><br>
+    <p id="statusMessage">Click 'Load Model' to start.</p>
+    
+    <div class="container">
+        <!-- Image Inference Section -->
+        <div class="section" id="imageSection">
+            <h2>Image Inference</h2>
+            <button id="predictImageButton" disabled>Run Inference on Random Image</button>
+            <br><br>
+            <!-- Video Container with Overlay Canvas -->
+            <div id="videoContainer">
+                <!-- Display Canvas: 640x640 -->
+                <canvas id="outputCanvas" width="640" height="640"></canvas>
+                <video id="inputVideo" playsinline style="display:none;"></video>
+                <canvas id="overlayCanvas" width="640" height="640"></canvas>
+            </div>
+            <br><br>
+            <pre id="imagePredictionOutput">Prediction Output: N/A</pre>
+        </div>
+        
+        <!-- Video Inference Section -->
+        <div class="section" id="videoSection">
+            <h2>Video Inference</h2>
+            <button id="predictVideoButton" disabled>Run Inference on Video</button>
+            <br><br>
+            <!-- Removed Video Upload Elements -->
+            <button id="pauseVideoButton" disabled>Pause Video</button>
+            <br><br>
+        </div>
+        <div>
+            <pre class="section" id="videoPredictionOutput">Video Prediction Output: N/A</pre>
+        </div>
+        <!-- Webcam Inference Section -->
+        <div class="section" id="webcamSection">
+            <h2>Webcam Inference</h2>
+            <button id="predictWebcamButton" disabled>Run Inference on Webcam</button>
+            <br><br>
+            <button id="pauseWebcamButton" disabled>Pause Webcam</button>
+            <br><br>
+            <!-- Webcam Container with Overlay Canvas -->
+            <div id="webcamContainer">
+                <!-- Display Canvas: 360x480 -->
+                <canvas id="webcamDisplayCanvas" width="640px" height="640px"></canvas>
+                <video id="webcamVideo" playsinline autoplay muted style="display:none;"></video>
+                <canvas id="webcamOverlayCanvas" width="640px" height="640px"></canvas>
+                <br><br>
+            </div>
+        </div>
+        <div>
+            <pre class="section" id="webcamPredictionOutput">Webcam Prediction Output: N/A</pre>
+        </div>
+            
+    </div>
+    
+    <!-- Hidden Canvas: 224x224 for Inference -->
+    <canvas id="inputCanvas" width="224" height="224" style="display:none;"></canvas>
+    <p id="backendDisplay">Backend: webgl</p>
+    
+    <!-- TensorFlow.js libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script>
+    <script type="module" src="index.js"></script>
+    
+</body>
+</html>
