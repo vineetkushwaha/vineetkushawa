@@ -42,6 +42,7 @@ let fpsVideo = 0;
 let frameCountVideo = 0;
 let lastFpsUpdateTimeVideo = performance.now();
 
+let camerafps=0
 let fpsWebcam = 0;
 let frameCountWebcam = 0;
 let lastFpsUpdateTimeWebcam = performance.now();
@@ -84,7 +85,7 @@ tf.serialization.registerClass(L2);
 const tracking = {
     thresholdFloor: 25.0,
     thresholdSeil: 50.0,
-    skipCall: 1, // Number of consecutive tracked frames before forcing model inference
+    skipCall: 0, // Number of consecutive tracked frames before forcing model inference
     win_size: 20,
     epsilon: 0.01,
     min_eigen: 0.001,
@@ -624,7 +625,7 @@ async function performInference(imageElement, displayCtx, overlayCtx, prediction
                     tracking.prev_xy.set(tracking.curr_xy);
 
                     // Update prediction output
-                    predictionOutput.innerText = `Using tracked keypoints. \nConsecutive Tracked Frames: ${tracking.consecutiveTrackedFrames} \n\nFPS: ${fps.toFixed(1)}\n`;
+                    predictionOutput.innerText = `Using tracked keypoints. \nConsecutive Tracked Frames: ${tracking.consecutiveTrackedFrames} \n\nFPS: ${fps.toFixed(1)}\n`+ camerafps;
                     
                     return; // Exit performInference without model inference
                 } else {
@@ -716,7 +717,7 @@ async function performInference(imageElement, displayCtx, overlayCtx, prediction
         console.log(outputText);
 
         // Update the prediction output
-        predictionOutput.innerText = outputText;
+        predictionOutput.innerText = outputText + camerafps;
 
         // Draw bounding boxes and keypoints on the overlay canvas
         drawDetections(adjustedBoxes, adjustedKeypoints, finalClassLabels, finalScores, overlayCtx);
@@ -740,6 +741,9 @@ async function performInference(imageElement, displayCtx, overlayCtx, prediction
         statusMessage.innerText = `Error : ${error.message}`;
     }
 }
+
+
+
 
 // ====================== Render Tracked Points Function ======================
 function renderTrackedPoints(ctx) {
@@ -907,7 +911,7 @@ async function runInferenceOnVideo() {
     videoContainer.style.display = 'block';
 
     // Set video source to local video 'shoevid.mp4'
-    inputVideo.src = 'shoevid.mp4'; // Ensure 'shoevid.mp4' is in the same directory or provide the correct path
+    inputVideo.src = 'IMG_4330.mp4'; // Ensure 'shoevid.mp4' is in the same directory or provide the correct path
     inputVideo.width = 224;
     inputVideo.height = 224;
     inputVideo.autoplay = true;
@@ -1020,14 +1024,17 @@ async function runInferenceOnWebcam() {
             video: { 
                 width: { ideal: 360 }, 
                 height: { ideal: 480 },
-                frameRate: { ideal: 15, max: 30 }, 
+                frameRate: { ideal: 15, max: 20 }, 
                 facingMode: { exact: "environment" } // Request the back camera
             },
             audio: false
         };
         const stream = await navigator.mediaDevices.getUserMedia(constraints);
         const settings = stream.getVideoTracks()[0].getSettings();
-        console.log(`Webcam Frame Rate: ${settings.frameRate}`);
+        
+        camerafps=`Webcam Frame Rate: ${settings.frameRate}`
+        console.log(camerafps);
+        statusMessage.innerText = `Webcam Frame Rate: ${settings.frameRate}`;
         webcamVideo.srcObject = stream;
         await webcamVideo.play();
         console.log('Webcam stream started.');

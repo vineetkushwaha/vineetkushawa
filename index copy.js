@@ -314,7 +314,7 @@ async function loadModel() {
         statusMessage.innerText = 'Loading model...';
         console.log('Loading model...');
         // Replace 'last_web_model/model.json' with the path to your model best_v10_160_shoe_web_model best_web_model_81_224
-        model = await tf.loadGraphModel('best_v10_160_shoe_web_model/model.json', {
+        model = await tf.loadGraphModel('best_web_model_81_224/model.json', {
             customObjects: { 'L2': L2 }
         });
 
@@ -424,10 +424,10 @@ function scaleDetections(finalBoxes, finalLandmarks, scaleFactor) {
     const adjustedBoxes = finalBoxes.map(box => {
         const [center_x, center_y, width, height] = box;
         // Convert from normalized center coordinates to corner coordinates
-        const x1 = center_x * scaleFactor ;
-        const y1 = center_y  * scaleFactor;
-        const x2 =  width  * scaleFactor;
-        const y2 = height  * scaleFactor;
+        const x1 = (center_x - width / 2) * scaleFactor;
+        const y1 = (center_y - height / 2) * scaleFactor;
+        const x2 = (center_x + width / 2)  * scaleFactor;
+        const y2 = (center_y + height / 2)  * scaleFactor;
         return { x1: x1, y1: y1, x2: x2, y2: y2 };
     });
 
@@ -907,9 +907,9 @@ async function runInferenceOnVideo() {
     videoContainer.style.display = 'block';
 
     // Set video source to local video 'shoevid.mp4'
-    inputVideo.src = 'shoevid.mp4'; // Ensure 'shoevid.mp4' is in the same directory or provide the correct path
-    inputVideo.width = 160;
-    inputVideo.height = 160;
+    inputVideo.src = 'IMG_4330.MOV'; // Ensure 'shoevid.mp4' is in the same directory or provide the correct path
+    inputVideo.width = 224;
+    inputVideo.height = 224;
     inputVideo.autoplay = true;
     inputVideo.playsInline = true;
     inputVideo.muted = true;  // Mute the video if needed

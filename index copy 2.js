@@ -424,10 +424,10 @@ function scaleDetections(finalBoxes, finalLandmarks, scaleFactor) {
     const adjustedBoxes = finalBoxes.map(box => {
         const [center_x, center_y, width, height] = box;
         // Convert from normalized center coordinates to corner coordinates
-        const x1 = (center_x - width / 2) * scaleFactor;
-        const y1 = (center_y - height / 2) * scaleFactor;
-        const x2 = (center_x + width / 2)  * scaleFactor;
-        const y2 = (center_y + height / 2)  * scaleFactor;
+        const x1 = center_x  * scaleFactor;
+        const y1 = center_y * scaleFactor;
+        const x2 = width   * scaleFactor;
+        const y2 = height  * scaleFactor;
         return { x1: x1, y1: y1, x2: x2, y2: y2 };
     });
 
@@ -907,7 +907,7 @@ async function runInferenceOnVideo() {
     videoContainer.style.display = 'block';
 
     // Set video source to local video 'shoevid.mp4'
-    inputVideo.src = 'shoevid.mp4'; // Ensure 'shoevid.mp4' is in the same directory or provide the correct path
+    inputVideo.src = 'IMG_4330.MOV'; // Ensure 'shoevid.mp4' is in the same directory or provide the correct path
     inputVideo.width = 160;
     inputVideo.height = 160;
     inputVideo.autoplay = true;
